@@ -3,9 +3,8 @@ Tic Tac Toe Player
 """
 
 import math
+import random
 from copy import deepcopy
-
-# from turtle import pd
 
 X = "X"
 O = "O"
@@ -78,6 +77,7 @@ def result(board, action):
     board_state = deepcopy(board)
 
     if action not in actions(board):
+
         raise ValueError("Action is not valid for board state")
 
     # player_turn = player(board_state)
@@ -158,8 +158,47 @@ def utility(board):
     return 0
 
 
+def _minimax(board):
+
+    if terminal(board):
+        return utility(board)
+
+    if player(board) is X:
+        value = -math.inf
+
+        for action in actions(board):
+            value = max(value, _minimax(result(board, action)))
+
+        return value
+
+    value = math.inf
+
+    for action in actions(board):
+        value = min(value, _minimax(result(board, action)))
+
+    return value
+
+
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    if terminal(board):
+        return None
+
+    possible_actions = list(actions(board))
+    random.shuffle(possible_actions)
+    minmax_values = list()
+
+    if player(board) is X:
+        for action in possible_actions:
+            action_result = result(board, action)
+            value = _minimax(action_result)
+            minmax_values.append(value)
+        return possible_actions[minmax_values.index(max(minmax_values))]
+
+    for action in possible_actions:
+        action_result = result(board, action)
+        value = _minimax(action_result)
+        minmax_values.append(value)
+    return possible_actions[minmax_values.index(min(minmax_values))]
