@@ -36,6 +36,8 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
+    if board == initial_state():
+        return X
 
     # set up some variables to track the counts
     x_count = 0
@@ -63,7 +65,7 @@ def actions(board):
 
     for row_position, row in enumerate(board):
         for cell_position, cell in enumerate(row):
-            if cell == EMPTY:
+            if cell is EMPTY:
                 possible_actions.add((row_position, cell_position))
 
     return possible_actions
@@ -137,7 +139,8 @@ def terminal(board):
 
     # if there are no actions left to take or the board has a winner,
     # it is terminal
-    if actions(board) is None or winner(board) is not None:
+
+    if len(list(actions(board))) == 0 or winner(board) is not None:
         return True
 
     return False
